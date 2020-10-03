@@ -74,7 +74,7 @@ def main():
 	global config, camera, user, pswd, host, port, ad110, biurl, bicred
 
 	cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
-#	ret = cam.command('eventManager.cgi?action=attach&codes=[VideoMotion, CrossLineDetection, CrossRegionDetection, _DoTalkAction_]', timeout_cmd=(3.05, None), stream=True) # Will pull just these events
+#	ret = cam.command('eventManager.cgi?action=attach&codes=[VideoMotion,CrossLineDetection,CrossRegionDetection,_DoTalkAction_]', timeout_cmd=(3.05, None), stream=True) # Will pull just these events
 	ret = cam.command('eventManager.cgi?action=attach&codes=[All]', timeout_cmd=(3.05, None), stream=True)
 	ret.encoding = 'utf-8'
 

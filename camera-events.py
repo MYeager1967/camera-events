@@ -116,7 +116,7 @@ def main():
 				client.publish(basetopic+'/'+camera+'/button','off',QOS,False)
 
 		elif code == 'AlarmLocal':
-			global recording
+#			global recording
 			if action == 'Start':
 				print(datetime.now().replace(microsecond=0),' - Doorbell Motion Start')
 			elif action == 'Stop':

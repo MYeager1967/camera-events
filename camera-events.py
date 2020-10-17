@@ -86,9 +86,9 @@ def main():
 		m = re.search('Code=(.*?);', line)
 		if m:
 			line = line.replace('\n', '')
-			print("-----")
-			print(line)
-			print("-----")
+#			print("-----")
+#			print(line)
+#			print("-----")
 			code = m.group(1)
 
 		m2 = re.search('action=(.*?);', line)
@@ -104,10 +104,10 @@ def main():
 			obj = json.loads(data)
 
 		if code == '_DoTalkAction_':
-			print("-----")
-			print(line)
-			print("-----")
-			print(obj['Action'])
+#			print("-----")
+#			print(line)
+#			print("-----")
+#			print(obj['Action'])
 			if obj['Action'] == 'Invite':
 				print("Button Pressed")
 				client.publish(basetopic+'/'+camera+'/button','on',QOS,False)

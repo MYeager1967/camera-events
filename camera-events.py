@@ -63,7 +63,6 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-
 if ad110:
 	cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
 	ret = cam.command('configManager.cgi?action=setConfig&Lighting[0] [0].Mode=Off', timeout_cmd=(3.05, None), stream=False)

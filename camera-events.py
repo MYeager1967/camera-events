@@ -53,8 +53,8 @@ basetopic = config['mqtt']['topic']
 biurl = "http://"+config['blueiris']['address']+":"+config['blueiris']['port']
 bicred = "user="+config['blueiris']['user']+"&pw="+config['blueiris']['password']
 broker_address = config['mqtt']['address']
-client.username_pw_set(username=config['mqtt']['user'],password=config['mqtt']['password'])
 client = mqtt.Client(config['camera']['name']+str(int(random.random()*100)))
+client.username_pw_set(username=config['mqtt']['user'],password=config['mqtt']['password'])
 
 client.connected_flag=False
 client.on_connect=on_connect

@@ -17,7 +17,7 @@ from amcrest import Http
 def on_connect(client,userdata,flags,rc):
     if rc==0:
         print("Connected to MQTT...")
-        client.connected_flag=True
+        client.connected_flag=True 
 
 def on_disconnect(client,userdata,rc):
     print("Disconnecting reason "+str(rc))
@@ -63,7 +63,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print("Camera-Events version 0.1.1")
+print("Camera-Events version 0.1.1-beta")
 
 if ad110:
 	cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
@@ -87,9 +87,9 @@ def main():
 		m = re.search('Code=(.*?);', line)
 		if m:
 			line = line.replace('\n', '')
-#			print("-----")
-#			print(line)
-#			print("-----")
+##			print("-----")
+##			print(line)
+##			print("-----")
 			code = m.group(1)
 
 		m2 = re.search('action=(.*?);', line)

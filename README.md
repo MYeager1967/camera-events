@@ -1,4 +1,4 @@
-*** Please read as there have been changes to the conf file!!! ***
+*** Please read as there have been changes to the conf file starting with 0.1.2!!! ***
 
 This utility interfaces ONVIF cameras to Homeassistant. There are webcontrol interface features built in to handle certain aspects of motion or Blue Iris to control recording using the motion detection aspects of the camera itself instead of relying on software motion detection. These webcontrol features may require a bit of work on the part of the end user as I may or may not be using them myself. The current production version I am using will relate to Blue Iris and HomeAssistant as that is my environment. This was originally written for motion/motionEye. This is written to be run in a docker container and the ready to go container I am running can be found with in the registry as myeager1967 / camera-events:latest.
 

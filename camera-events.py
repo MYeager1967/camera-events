@@ -71,7 +71,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print("Camera-Events version 0.1.1-beta")
+print("Camera-Events version 0.1.2")
 
 if ad110 and not nightviz:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)

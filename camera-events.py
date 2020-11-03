@@ -54,6 +54,7 @@ pswd = config["camera"]["password"]
 host = config["camera"]["address"]
 port = config["camera"]["port"]
 ad110 = config.getboolean("camera", "ad110")
+nightviz = config.getboolean("camera", "nightviz")
 basetopic = config["mqtt"]["topic"]
 biurl = "http://" + config["blueiris"]["address"] + ":" + config["blueiris"]["port"]
 bicred = "user=" + config["blueiris"]["user"] + "&pw=" + config["blueiris"]["password"]
@@ -72,7 +73,7 @@ while not client.connected_flag:
 
 print("Camera-Events version 0.1.1-beta")
 
-if ad110:
+if ad110 and not nightviz:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
     ret = cam.command(
         "configManager.cgi?action=setConfig&Lighting[0] [0].Mode=Off",

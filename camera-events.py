@@ -17,18 +17,18 @@ from amcrest import Http
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print("Connected to MQTT...")
+        print(datetime.now().replace(microsecond=0), "Connected to MQTT...")
         client.connected_flag = True
 
 
 def on_disconnect(client, userdata, rc):
-    print("Disconnecting reason " + str(rc))
+    print(datetime.now().replace(microsecond=0), "Disconnecting reason " + str(rc))
     client.connected_flag = False
     client.disconnect_flag = True
 
 
 def sigterm_handler(signal, frame):
-    print("Exiting...")
+    print(datetime.now().replace(microsecond=0), "Exiting...")
     # 	ret.close()
     client.disconnect()
     client.loop_stop()
@@ -71,7 +71,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print("Camera-Events version 0.1.2")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.31")
 
 if ad110 and not nightviz:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
@@ -81,7 +81,7 @@ if ad110 and not nightviz:
         stream=False,
     )
     if ret.status_code == requests.codes.ok:
-        print("Night Vision Disabled...")
+        print(datetime.now().replace(microsecond=0), "Night Vision Disabled...")
 
 
 def main():
@@ -127,10 +127,10 @@ def main():
             # 			print("-----")
             # 			print(obj['Action'])
             if obj["Action"] == "Invite":
-                print("Button Pressed")
+                print(datetime.now().replace(microsecond=0), "Button Pressed")
                 client.publish(basetopic + "/" + camera + "/button", "on", QOS, False)
             elif obj["Action"] == "Hangup":
-                print("Button Cancelled")
+                print(datetime.now().replace(microsecond=0), "Button Cancelled")
                 client.publish(basetopic + "/" + camera + "/button", "off", QOS, False)
 
         elif code == "AlarmLocal":

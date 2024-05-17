@@ -71,7 +71,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.31")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.32")
 
 if ad110 and not nightviz:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
@@ -136,6 +136,9 @@ def main():
         elif code == "AlarmLocal":
             # 			global recording (in case I decide to manually control recording)
             if action == "Start":
+                response = requests.get(
+                    biurl + "/admin?camera=" + camera + "&trigger&flagalert=1&" + bicred
+                )  # memo=IVS&"+bicred)
                 print(datetime.now().replace(microsecond=0), " - Doorbell Motion Start")
             elif action == "Stop":
                 print(datetime.now().replace(microsecond=0), " - Doorbell Motion Stop")
@@ -154,7 +157,7 @@ def main():
                 )
                 # 				response = requests.get(biurl+"/admin?camera="+camera+"&trigger&flagalert=1&"+bicred)#memo=IVS&"+bicred)
                 client.publish(
-                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "on", QOS, False
+                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "on", QOS, False
                 )
             elif action == "Stop":
                 print(
@@ -162,7 +165,7 @@ def main():
                     " - Intrusion Stop (" + obj["Name"] + ")",
                 )
                 client.publish(
-                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "off", QOS, False
+                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "off", QOS, False
                 )
 
         elif code == "CrossRegionDetection":
@@ -173,7 +176,7 @@ def main():
                 )
                 # 				response = requests.get(biurl+"/admin?camera="+camera+"&trigger&flagalert=1&"+bicred)#memo=IVS&"+bicred)
                 client.publish(
-                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "on", QOS, False
+                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "on", QOS, False
                 )
             elif action == "Stop":
                 print(
@@ -181,7 +184,7 @@ def main():
                     " - Region Stop (" + obj["Name"] + ")",
                 )
                 client.publish(
-                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "off", QOS, False
+                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "off", QOS, False
                 )
 
 

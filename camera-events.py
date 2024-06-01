@@ -9,7 +9,8 @@ import json
 import random
 import requests
 import signal
-import subprocess
+
+# import subprocess
 import configparser
 
 from amcrest import Http
@@ -46,15 +47,17 @@ def lines(ret):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
-camera = os.environ["CAMERA"]
+camera = "Front"
+# camera = os.environ["CAMERA"]
 config = configparser.ConfigParser()
-config.read("/config/" + camera + ".conf")
+config.read("camera + ".conf")
+# config.read("C:/Users/Mike/Documents/Projects/Python/camera-events/" + camera + ".conf")
 user = config["camera"]["user"]
 pswd = config["camera"]["password"]
 host = config["camera"]["address"]
 port = config["camera"]["port"]
 ad110 = config.getboolean("camera", "ad110")
-nightviz = config.getboolean("camera", "nightviz")
+nightvision = config.getboolean("camera", "nightviz")
 basetopic = config["mqtt"]["topic"]
 biurl = "http://" + config["blueiris"]["address"] + ":" + config["blueiris"]["port"]
 bicred = "user=" + config["blueiris"]["user"] + "&pw=" + config["blueiris"]["password"]
@@ -63,6 +66,20 @@ client = mqtt.Client(config["camera"]["name"] + str(int(random.random() * 100)))
 client.username_pw_set(
     username=config["mqtt"]["user"], password=config["mqtt"]["password"]
 )
+#
+# camera = "front"
+# user = "admin"
+# pswd = "89Bmw325i"
+# host = "192.168.30.54"
+# port = "80"
+# ad110 = False
+# nightvision = True
+# basetopic = "BlueIris"
+# biurl = "http://192.168.10.20:81"
+# bicred = "user=Mike&pw=89Bmw325i"
+# broker_address = "192.168.10.30"
+# client = mqtt.Client(camera + str(int(random.random() * 100)))
+# client.username_pw_set(username="homeassistant", password="A-10Warthog")
 
 client.connected_flag = False
 client.on_connect = on_connect
@@ -71,9 +88,18 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.32")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.31")
 
-if ad110 and not nightviz:
+if nightvision:
+    cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
+    ret = cam.command(
+        "configManager.cgi?action=setConfig&Lighting[0] [0].Mode=Auto",
+        timeout_cmd=(3.05, None),
+        stream=False,
+    )
+    if ret.status_code == requests.codes.ok:
+        print(datetime.now().replace(microsecond=0), "Night Vision -> Auto...")
+else:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
     ret = cam.command(
         "configManager.cgi?action=setConfig&Lighting[0] [0].Mode=Off",
@@ -81,7 +107,7 @@ if ad110 and not nightviz:
         stream=False,
     )
     if ret.status_code == requests.codes.ok:
-        print(datetime.now().replace(microsecond=0), "Night Vision Disabled...")
+        print(datetime.now().replace(microsecond=0), "Night Vision -> Off...")
 
 
 def main():
@@ -136,18 +162,24 @@ def main():
         elif code == "AlarmLocal":
             # 			global recording (in case I decide to manually control recording)
             if action == "Start":
-                response = requests.get(
-                    biurl + "/admin?camera=" + camera + "&trigger&flagalert=1&" + bicred
-                )  # memo=IVS&"+bicred)
-                print(datetime.now().replace(microsecond=0), " - Doorbell Motion Start")
+                print(
+                    datetime.now().replace(microsecond=0),
+                    " - Doorbell Motion Start" + index,
+                )
             elif action == "Stop":
                 print(datetime.now().replace(microsecond=0), " - Doorbell Motion Stop")
 
         elif code == "VideoMotion" and not ad110:
             if action == "Start":
+                # response = requests.get(
+                #    biurl + "/admin?camera=" + camera + "&trigger&memo=ONVIF&" + bicred
+                # )  # flagalert=1&memo=ONVIF&"+bicred)
+                # print(response.text)
                 print(datetime.now().replace(microsecond=0), " - Motion Start")
+                client.publish(basetopic + "/" + camera + "/motion", "on", QOS, False)
             elif action == "Stop":
                 print(datetime.now().replace(microsecond=0), " - Motion Stop")
+                client.publish(basetopic + "/" + camera + "/motion", "off", QOS, False)
 
         elif code == "CrossLineDetection":
             if action == "Start":
@@ -157,7 +189,7 @@ def main():
                 )
                 # 				response = requests.get(biurl+"/admin?camera="+camera+"&trigger&flagalert=1&"+bicred)#memo=IVS&"+bicred)
                 client.publish(
-                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "on", QOS, False
+                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "on", QOS, False
                 )
             elif action == "Stop":
                 print(
@@ -165,7 +197,7 @@ def main():
                     " - Intrusion Stop (" + obj["Name"] + ")",
                 )
                 client.publish(
-                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "off", QOS, False
+                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "off", QOS, False
                 )
 
         elif code == "CrossRegionDetection":
@@ -174,9 +206,12 @@ def main():
                     datetime.now().replace(microsecond=0),
                     " - Region Start (" + obj["Name"] + ")",
                 )
+                # response = requests.get(
+                #    biurl + "/admin?camera=" + camera + "&trigger&flagalert=1&" + bicred
+                # )  # memo=IVS&"+bicred)
                 # 				response = requests.get(biurl+"/admin?camera="+camera+"&trigger&flagalert=1&"+bicred)#memo=IVS&"+bicred)
                 client.publish(
-                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "on", QOS, False
+                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "on", QOS, False
                 )
             elif action == "Stop":
                 print(
@@ -184,7 +219,7 @@ def main():
                     " - Region Stop (" + obj["Name"] + ")",
                 )
                 client.publish(
-                    basetopic + "/" + camera + "/IVS/" + obj["Name"], "off", QOS, False
+                    basetopic + "/" + camera + "/ivs/" + obj["Name"], "off", QOS, False
                 )
 
 

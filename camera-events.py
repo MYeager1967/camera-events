@@ -13,7 +13,7 @@ import signal
 # import subprocess
 import configparser
 
-from amcrest import Http
+from amcrest import http
 
 
 def on_connect(client, userdata, flags, rc):
@@ -50,36 +50,36 @@ signal.signal(signal.SIGTERM, sigterm_handler)
 camera = "Front"
 # camera = os.environ["CAMERA"]
 config = configparser.ConfigParser()
-config.read("/" + camera + ".conf")
+# config.read("/" + camera + ".conf")
 # config.read("C:/Users/Mike/Documents/Projects/Python/camera-events/" + camera + ".conf")
-user = config["camera"]["user"]
-pswd = config["camera"]["password"]
-host = config["camera"]["address"]
-port = config["camera"]["port"]
-ad110 = config.getboolean("camera", "ad110")
-nightvision = config.getboolean("camera", "nightviz")
-basetopic = config["mqtt"]["topic"]
-biurl = "http://" + config["blueiris"]["address"] + ":" + config["blueiris"]["port"]
-bicred = "user=" + config["blueiris"]["user"] + "&pw=" + config["blueiris"]["password"]
-broker_address = config["mqtt"]["address"]
-client = mqtt.Client(config["camera"]["name"] + str(int(random.random() * 100)))
-client.username_pw_set(
-    username=config["mqtt"]["user"], password=config["mqtt"]["password"]
-)
+# user = config["camera"]["user"]
+# pswd = config["camera"]["password"]
+# host = config["camera"]["address"]
+# port = config["camera"]["port"]
+# ad110 = config.getboolean("camera", "ad110")
+# nightvision = config.getboolean("camera", "nightviz")
+# basetopic = config["mqtt"]["topic"]
+# biurl = "http://" + config["blueiris"]["address"] + ":" + config["blueiris"]["port"]
+# bicred = "user=" + config["blueiris"]["user"] + "&pw=" + config["blueiris"]["password"]
+# broker_address = config["mqtt"]["address"]
+# client = mqtt.Client(config["camera"]["name"] + str(int(random.random() * 100)))
+# client.username_pw_set(
+#    username=config["mqtt"]["user"], password=config["mqtt"]["password"]
+# )
 #
 # camera = "front"
-# user = "admin"
-# pswd = "89Bmw325i"
-# host = "192.168.30.54"
-# port = "80"
-# ad110 = False
-# nightvision = True
-# basetopic = "BlueIris"
-# biurl = "http://192.168.10.20:81"
-# bicred = "user=Mike&pw=89Bmw325i"
-# broker_address = "192.168.10.30"
-# client = mqtt.Client(camera + str(int(random.random() * 100)))
-# client.username_pw_set(username="homeassistant", password="A-10Warthog")
+user = "admin"
+pswd = "89Bmw325i"
+host = "192.168.30.54"
+port = "80"
+ad110 = False
+nightvision = True
+basetopic = "BlueIris"
+biurl = "http://192.168.10.20:81"
+bicred = "user=Mike&pw=89Bmw325i"
+broker_address = "192.168.10.30"
+client = mqtt.Client((mqtt.CallbackAPIVersion.VERSION1)camera + str(int(random.random() * 100)))
+client.username_pw_set(username="homeassistant", password="A-10Warthog")
 
 client.connected_flag = False
 client.on_connect = on_connect
@@ -88,10 +88,10 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.36")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.38")
 
 if nightvision:
-    cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
+    cam = http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
     ret = cam.command(
         "configManager.cgi?action=setConfig&Lighting[0] [0].Mode=Auto",
         timeout_cmd=(3.05, None),
@@ -100,7 +100,7 @@ if nightvision:
     if ret.status_code == requests.codes.ok:
         print(datetime.now().replace(microsecond=0), "Night Vision -> Auto...")
 else:
-    cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
+    cam = http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
     ret = cam.command(
         "configManager.cgi?action=setConfig&Lighting[0] [0].Mode=Off",
         timeout_cmd=(3.05, None),
@@ -113,7 +113,7 @@ else:
 def main():
     global config, camera, user, pswd, host, port, ad110, biurl, bicred
 
-    cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
+    cam = http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
     # 	ret = cam.command('eventManager.cgi?action=attach&codes=[VideoMotion,CrossLineDetection,CrossRegionDetection,_DoTalkAction_]', timeout_cmd=(3.05, None), stream=True) # Will pull just these events
     ret = cam.command(
         "eventManager.cgi?action=attach&codes=[All]",

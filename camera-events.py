@@ -13,7 +13,7 @@ import signal
 # import subprocess
 import configparser
 
-from amcrest import http
+from amcrest import Http
 
 
 def on_connect(client, userdata, flags, rc):
@@ -88,7 +88,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.35")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.36")
 
 if nightvision:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)

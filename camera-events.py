@@ -47,6 +47,7 @@ def lines(ret):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
+print(datetime.now().replace(microsecond=0), "Camera-Events")
 camera = "Front"
 # camera = os.environ["CAMERA"]
 config = configparser.ConfigParser()
@@ -96,7 +97,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.393")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.394")
 
 if nightvision:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)
@@ -185,11 +186,11 @@ def main():
                 # print(response.text)
                 print(datetime.now().replace(microsecond=0), " - Motion Start")
                 client.publish(basetopic + "/" + camera + "/motion", "on", QOS, False)
-                client.publish(basetopic + "/" + camera + "/motion2", "on", QOS, False)
+                client.publish(basetopic + "/" + camera + "/motion3", "on", QOS, False)
             elif action == "Stop":
                 print(datetime.now().replace(microsecond=0), " - Motion Stop")
                 client.publish(basetopic + "/" + camera + "/motion", "off", QOS, False)
-                client.publish(basetopic + "/" + camera + "/motion2", "off", QOS, False)
+                client.publish(basetopic + "/" + camera + "/motion3", "off", QOS, False)
 
         elif code == "CrossLineDetection":
             if action == "Start":

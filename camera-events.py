@@ -16,7 +16,7 @@ import configparser
 from amcrest.http import Http
 
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties):
     if rc == 0:
         print(datetime.now().replace(microsecond=0), "Connected to MQTT...")
         client.connected_flag = True
@@ -79,7 +79,9 @@ biurl = "http://192.168.10.20:81"
 bicred = "user=Mike&pw=89Bmw325i"
 broker_address = "192.168.10.30"
 # client = mqtt.Client(camera + str(int(random.random() * 100)))
+# client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client = mqtt.Client(
+    mqtt.CallbackAPIVersion.VERSION2,
     client_id=(camera + str(int(random.random() * 100))),
     transport="tcp",
     protocol=mqtt.MQTTv311,
@@ -94,7 +96,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.392")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.393")
 
 if nightvision:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)

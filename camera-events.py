@@ -78,7 +78,13 @@ basetopic = "BlueIris"
 biurl = "http://192.168.10.20:81"
 bicred = "user=Mike&pw=89Bmw325i"
 broker_address = "192.168.10.30"
-client = mqtt.Client(camera + str(int(random.random() * 100)))
+# client = mqtt.Client(camera + str(int(random.random() * 100)))
+client = mqtt.Client(
+    client_id=(camera + str(int(random.random() * 100))),
+    transport="tcp",
+    protocol=mqtt.MQTTv311,
+    clean_session=True,
+)
 client.username_pw_set(username="homeassistant", password="A-10Warthog")
 
 client.connected_flag = False
@@ -88,7 +94,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.39")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.391")
 
 if nightvision:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)

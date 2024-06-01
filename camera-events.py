@@ -13,7 +13,7 @@ import signal
 # import subprocess
 import configparser
 
-from amcrest import Http
+from amcrest import http
 
 
 def on_connect(client, userdata, flags, rc):
@@ -47,11 +47,11 @@ def lines(ret):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
-# camera = "Front"
-camera = os.environ["CAMERA"]
+camera = "Front"
+# camera = os.environ["CAMERA"]
 config = configparser.ConfigParser()
-config.read(camera + ".conf")
-# config.read("C:/Users/Mike/Documents/Projects/Python/camera-events/" + camera + ".conf")
+# config.read(camera + ".conf")
+config.read("C:/Users/Mike/Documents/Projects/Python/camera-events/" + camera + ".conf")
 user = config["camera"]["user"]
 pswd = config["camera"]["password"]
 host = config["camera"]["address"]
@@ -88,7 +88,7 @@ client.loop_start()
 while not client.connected_flag:
     time.sleep(1)
 
-print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.32")
+print(datetime.now().replace(microsecond=0), "Camera-Events version 0.1.33")
 
 if nightvision:
     cam = Http(host, port, user, pswd, retries_connection=1, timeout_protocol=3.05)

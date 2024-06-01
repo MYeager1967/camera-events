@@ -47,8 +47,8 @@ def lines(ret):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
-camera = "Front"
-# camera = os.environ["CAMERA"]
+# camera = "Front"
+camera = os.environ["CAMERA"]
 config = configparser.ConfigParser()
 config.read("camera + ".conf")
 # config.read("C:/Users/Mike/Documents/Projects/Python/camera-events/" + camera + ".conf")
